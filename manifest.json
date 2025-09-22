@@ -1,0 +1,40 @@
+{
+  "name": "QuickTag Images",
+  "short_name": "QuickTag",
+  "description": "AI-Powered Image Labeling & Organization Tool",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F8FC",
+  "theme_color": "#5E72E4",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo.jpeg",
+      "sizes": "any",
+      "type": "image/jpeg"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Main interface"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "lang": "en-US",
+  "dir": "ltr"
+}

@@ -1,0 +1,48 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist/
+build/
+out/
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+
+# Test coverage
+coverage/
+*.lcov
+
+# Package manager locks (optional - you may want to keep these)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Local Project Files
+CLAUDE.md
+openrouter-api-docs
+PWA-Testing-Guide.md

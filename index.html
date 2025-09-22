@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickTag Images - AI-Powered Image Labeling</title>
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#5E72E4">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="QuickTag">
+    <link rel="apple-touch-icon" href="/assets/logo.jpeg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/pwa.css">
+
+    <!-- Scripts -->
+    <script src="image-optimizer.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header with integrated folder selection -->
+        <header class="app-header">
+            <div class="header-top">
+                <div class="header-branding">
+                    <img src="assets/logo.jpeg" alt="QuickTag Logo" class="app-logo">
+<!--                    <p class="app-subtitle">AI-Powered Image Labeling & Organization</p> -->
+                </div>
+                
+                <!-- Folder Selection integrated in header -->
+                <div class="header-folder-selection">
+                    <div class="folder-controls">
+                        <button class="btn-add-folder" id="addFolderBtn">
+                            <span class="btn-icon">+</span>
+                            Add Folder
+                        </button>
+                        <div class="folder-stats" id="folderStats" style="display: none;">
+                            <span class="stat-label">Folders:</span>
+                            <span class="stat-value" id="totalFolders">0</span>
+                            <span class="stat-separator">|</span>
+                            <span class="stat-label">Images:</span>
+                            <span class="stat-value" id="totalImages">0</span>
+                        </div>
+                        <div class="selected-folders-list" id="selectedFolders">
+                            <!-- Folder tags will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- LLM Status Indicator -->
+                <div class="llm-status" id="llmStatus">
+                    <div class="status-indicator" id="statusIndicator"></div>
+                    <span class="status-label" id="statusLabel">LLM Connected</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content with side-by-side layout -->
+        <main class="main-content">
+            <div class="content-columns">
+                <!-- Image Preview Grid -->
+                <section class="image-preview" id="imagePreview" style="display: none;">
+                    <div class="preview-header">
+                        <h2>Image Preview</h2>
+                        <div class="preview-controls">
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="descriptiveModeToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label" title="Enable for longer, more keyword-rich filenames that are easier to search">
+                                    Descriptive Names
+                                </span>
+                            </div>
+                            <div class="language-selector-container">
+                                <label for="languageSelector" class="language-label">Language:</label>
+                                <select id="languageSelector" class="language-selector">
+                                    <option value="en">English</option>
+                                    <option value="fr">Français</option>
+                                    <option value="de">Deutsch</option>
+                                    <option value="es">Español</option>
+                                    <option value="hi">हिन्दी</option>
+                                </select>
+                            </div>
+                            <button class="btn-secondary" id="selectAllBtn">Select All</button>
+                            <button class="btn-secondary" id="deselectAllBtn">Deselect All</button>
+                            <button class="btn-primary" id="processBtn">
+                                <span class="btn-icon">🤖</span>
+                                Process Images
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="image-grid" id="imageGrid">
+                        <!-- Image cards will be dynamically added here -->
+                    </div>
+                </section>
+
+                <!-- Timeline Section -->
+                <section class="timeline-section" id="timelineSection" style="display: none;">
+                    <div class="timeline-header">
+                        <h2>Processing Timeline</h2>
+                        <div class="timeline-controls" id="timelineControls" style="display: none;">
+                            <button class="btn-primary" id="timelineDownloadBtn">
+                                <span class="btn-icon">💾</span>
+                                Download All
+                            </button>
+                            <button class="btn-secondary" id="timelineExportBtn">
+                                <span class="btn-icon">📄</span>
+                                Export Log
+                            </button>
+                            <div class="control-separator"></div>
+                            <button class="btn-warning" id="newBatchBtn">
+                                <span class="btn-icon">🔄</span>
+                                New Batch
+                            </button>
+                        </div>
+                    </div>
+                    <div class="timeline-container">
+                        <div class="timeline-line"></div>
+                        <div class="timeline-items" id="timelineItems">
+                            <!-- Timeline items will be dynamically added here -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Current Processing Display (Fixed) -->
+        <div class="current-processing" id="currentProcessing" style="display: none;">
+            <h3>Processing</h3>
+            <img class="current-thumbnail" id="currentThumbnail" src="" alt="Current image">
+            <div class="current-details">
+                <div class="processing-status">
+                    <span class="status-text" id="statusText">Analyzing image...</span>
+                    <div class="pulse-indicator"></div>
+                </div>
+                <div class="generated-name" id="generatedName">-</div>
+                <div class="generated-metadata" id="generatedMetadata">-</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 / 0</div>
+            <button class="btn-stop" id="stopProcessingBtn" style="display: none;">
+                <span class="btn-icon">⏹</span>
+                Stop Processing
+            </button>
+        </div>
+
+        <!-- Results Modal -->
+        <div class="modal" id="resultsModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Processing Complete</h2>
+                    <button class="modal-close" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="results-summary" id="resultsSummary">
+                        <!-- Results will be dynamically added here -->
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn-primary" id="downloadResults">Download All</button>
+                        <button class="btn-secondary" id="exportLog">Export Log</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settingsModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>LLM Settings</h2>
+                    <button class="modal-close" id="closeSettingsModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label for="llmUrlInput" class="form-label">LLM Server URL</label>
+                            <input type="text" id="llmUrlInput" class="form-input" placeholder="http://127.0.0.1:1234" value="http://127.0.0.1:1234">
+                            <p class="form-hint">Enter the base URL for your local LLM server (e.g., LM Studio, Ollama)</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="llmModelSelect" class="form-label">Model</label>
+                            <div class="model-select-wrapper">
+                                <select id="llmModelSelect" class="form-input">
+                                    <option value="">Loading models...</option>
+                                </select>
+                                <button class="btn-secondary btn-small" id="refreshModelsBtn" title="Refresh model list">
+                                    <span class="btn-icon">🔄</span>
+                                </button>
+                            </div>
+                            <p class="form-hint">Select the vision-capable model to use for image analysis</p>
+                        </div>
+                        <div class="connection-status" id="connectionStatus">
+                            <!-- Connection status will be shown here -->
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn-primary" id="saveSettingsBtn">Save Settings</button>
+                        <button class="btn-secondary" id="cancelSettingsBtn">Cancel</button>
+                        <button class="btn-secondary" id="testConnectionBtn">Test Connection</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for folder selection -->
+    <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;">
+
+    <!-- Libraries for ZIP and metadata handling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js"></script>
+    <script src="app.js"></script>
+
+    <!-- PWA Installer -->
+    <script src="js/pwa-installer.js"></script>
+</body>
+</html>
