@@ -123,7 +123,7 @@ const LLM_CONFIG = {
 #### Tested Vision Models
 The following models have been tested and confirmed to work:
 - **Gemma 3 27B** - Best quality results
-- **Gemma 3 9B** - Good balance of speed and quality  
+- **Gemma 3 12B** - Good balance of speed and quality  
 - **Gemma 3 4B** - Fastest processing
 
 ## 📖 Usage
