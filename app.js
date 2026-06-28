@@ -118,6 +118,7 @@ const elements = {
 document.addEventListener('DOMContentLoaded', () => {
     loadUserPreferences();
     initializeEventListeners();
+    initializePhase4UX();
     checkLLMConnection();
     initializeOptimizer();
 });
@@ -350,6 +351,132 @@ function initializeEventListeners() {
     });
 }
 
+// Phase 4 — additive layout/IA wiring: settings gear, empty-state entry,
+// clear-all, drag-and-drop, and keyboard access for the LLM pill.
+function initializePhase4UX() {
+    // Visible Settings trigger (the LLM pill click is kept as well)
+    const settingsBtn = document.getElementById('settingsBtn');
+    settingsBtn?.addEventListener('click', () => openSettingsModal());
+
+    // Make the LLM status pill keyboard-operable (it opens settings on click)
+    elements.llmStatus?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openSettingsModal();
+        }
+    });
+
+    // Empty-state "Add Folder" mirrors the header CTA
+    const emptyAddFolderBtn = document.getElementById('emptyAddFolderBtn');
+    emptyAddFolderBtn?.addEventListener('click', () => {
+        if (!appState.isProcessing) elements.folderInput.click();
+    });
+
+    // Clear all folders from the context bar
+    const clearAllBtn = document.getElementById('clearAllFoldersBtn');
+    clearAllBtn?.addEventListener('click', () => {
+        if (appState.isProcessing) return;
+        clearAllFolders();
+    });
+
+    // Drag-and-drop onto the work area
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+        let dragDepth = 0;
+        const clearActive = () => { dragDepth = 0; mainContent.classList.remove('drag-active'); };
+
+        mainContent.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            if (appState.isProcessing) return;
+            dragDepth++;
+            mainContent.classList.add('drag-active');
+        });
+        mainContent.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (appState.isProcessing) return;
+            if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+        });
+        mainContent.addEventListener('dragleave', () => {
+            dragDepth = Math.max(0, dragDepth - 1);
+            if (dragDepth === 0) mainContent.classList.remove('drag-active');
+        });
+        mainContent.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            clearActive();
+            if (appState.isProcessing) return;
+            await handleDroppedItems(e.dataTransfer);
+        });
+    }
+}
+
+function clearAllFolders() {
+    appState.selectedFolders = [];
+    elements.folderInput.value = '';
+    updateAllImages();
+    updateFolderDisplay();
+    updateImageGrid();
+}
+
+// Collect image files from a drop (folders traversed via webkitGetAsEntry),
+// then funnel through the same ingest path as the file picker.
+async function handleDroppedItems(dataTransfer) {
+    if (!dataTransfer) return;
+    const files = [];
+    const items = dataTransfer.items;
+    const canTraverse = items && items.length &&
+        typeof items[0].webkitGetAsEntry === 'function';
+
+    if (canTraverse) {
+        const entries = [];
+        for (const item of items) {
+            const entry = item.webkitGetAsEntry && item.webkitGetAsEntry();
+            if (entry) entries.push(entry);
+        }
+        for (const entry of entries) {
+            await traverseEntry(entry, files);
+        }
+    } else if (dataTransfer.files) {
+        for (const file of dataTransfer.files) files.push(file);
+    }
+
+    const imageFiles = files.filter(isImageFile);
+    ingestImageFiles(imageFiles);
+}
+
+// Recursively walk a FileSystemEntry, tagging files with a relative path so
+// getFolderPath can group them by their source folder.
+function traverseEntry(entry, out) {
+    return new Promise((resolve) => {
+        if (!entry) { resolve(); return; }
+        if (entry.isFile) {
+            entry.file((file) => {
+                try { file._relativePath = (entry.fullPath || file.name).replace(/^\//, ''); } catch (_) {}
+                out.push(file);
+                resolve();
+            }, () => resolve());
+        } else if (entry.isDirectory) {
+            const reader = entry.createReader();
+            const collected = [];
+            const readBatch = () => {
+                reader.readEntries(async (batch) => {
+                    if (!batch.length) {
+                        for (const child of collected) {
+                            await traverseEntry(child, out);
+                        }
+                        resolve();
+                    } else {
+                        collected.push(...batch);
+                        readBatch();
+                    }
+                }, () => resolve());
+            };
+            readBatch();
+        } else {
+            resolve();
+        }
+    });
+}
+
 // LLM Connection Check
 async function checkLLMConnection() {
     try {
@@ -541,7 +668,11 @@ function showConnectionStatus(type, message) {
 function handleFolderSelection(event) {
     const files = Array.from(event.target.files);
     const imageFiles = files.filter(file => isImageFile(file));
-    
+    ingestImageFiles(imageFiles);
+}
+
+// Shared ingest path for both the file picker and drag-and-drop
+function ingestImageFiles(imageFiles) {
     if (imageFiles.length === 0) {
         alert('No image files found in the selected folder.');
         return;
@@ -580,7 +711,8 @@ function isImageFile(file) {
 }
 
 function getFolderPath(file) {
-    const path = file.webkitRelativePath || file.name;
+    // _relativePath is set by the drag-and-drop traversal (webkitGetAsEntry)
+    const path = file._relativePath || file.webkitRelativePath || file.name;
     const parts = path.split('/');
     parts.pop(); // Remove filename
     return parts.join('/') || 'Root';
@@ -601,12 +733,30 @@ function updateAllImages() {
     appState.selectedImages = new Set(appState.allImages.map(img => img.id));
 }
 
+// Phase 4: drive the adaptive column grid + section visibility by workflow stage.
+// 'empty'  -> no folders: show onboarding/drop-zone card, hide both panels.
+// 'selecting' -> folders chosen, not processed: Preview gets the room, Timeline hidden.
+// 'processing' -> processing/done: balanced two columns, both panels shown.
+function setStage(stage) {
+    const cc = document.querySelector('.content-columns');
+    if (cc) cc.className = 'content-columns stage-' + stage;
+    if (elements.imagePreview) {
+        elements.imagePreview.style.display = stage === 'empty' ? 'none' : 'flex';
+    }
+    if (elements.timelineSection) {
+        elements.timelineSection.style.display = stage === 'processing' ? 'flex' : 'none';
+    }
+}
+
 function updateFolderDisplay() {
+    const contextBar = document.getElementById('folderContextBar');
     if (appState.selectedFolders.length === 0) {
         elements.selectedFolders.innerHTML = '';
         elements.folderStats.style.display = 'none';
+        if (contextBar) contextBar.style.display = 'none';
         return;
     }
+    if (contextBar) contextBar.style.display = 'flex';
 
     elements.selectedFolders.innerHTML = appState.selectedFolders.map(folder => {
         const folderName = folder.path.split('/').pop() || folder.path;
@@ -645,14 +795,17 @@ function removeFolder(path) {
 
 function updateImageGrid() {
     if (appState.allImages.length === 0) {
-        elements.imagePreview.style.display = 'none';
-        elements.timelineSection.style.display = 'none';
+        setStage('empty');
         return;
     }
 
-    elements.imagePreview.style.display = 'flex';
-    elements.timelineSection.style.display = 'flex';
-    
+    // Folders loaded: 'selecting' until a batch has been processed, then keep 'processing'
+    if (appState.isProcessing || appState.processedImages.length > 0) {
+        setStage('processing');
+    } else {
+        setStage('selecting');
+    }
+
     // Check if we should use optimizer (50+ images)
     const shouldUseOptimizer = appState.imageOptimizer && appState.allImages.length >= 50;
     appState.useOptimizer = shouldUseOptimizer;
@@ -897,10 +1050,10 @@ async function processImages() {
     // Disable all interactive elements
     disableAllControls();
     
-    // Show processing UI
+    // Show processing UI — reveal the Timeline column (balanced two-column stage)
     elements.currentProcessing.style.display = 'block';
     elements.stopProcessingBtn.style.display = 'flex';
-    elements.timelineSection.style.display = 'flex';
+    setStage('processing');
     elements.timelineItems.innerHTML = '';
 
     let processed = 0;
@@ -1947,13 +2100,12 @@ function resetForNewBatch() {
     elements.imageGrid.className = 'image-grid'; // Reset class
     elements.folderInput.value = '';
     
-    // Hide sections
-    elements.imagePreview.style.display = 'none';
-    elements.timelineSection.style.display = 'none';
+    // Hide sections — back to the empty onboarding stage
+    setStage('empty');
     elements.timelineControls.style.display = 'none';
     elements.currentProcessing.style.display = 'none';
     elements.resultsModal.style.display = 'none';
-    
+
     // Update folder display
     updateFolderDisplay();
     

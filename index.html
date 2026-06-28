@@ -41,48 +41,70 @@
         <!-- Header with integrated folder selection -->
         <header class="app-header">
             <div class="header-top">
-                <div class="header-branding">
-                    <img src="assets/logo.jpeg" alt="QuickTag Logo" class="app-logo">
-<!--                    <p class="app-subtitle">AI-Powered Image Labeling & Organization</p> -->
-                </div>
-                
-                <!-- Folder Selection integrated in header -->
-                <div class="header-folder-selection">
-                    <div class="folder-controls">
-                        <button class="btn-add-folder" id="addFolderBtn">
-                            <span class="btn-icon">+</span>
-                            Add Folder
-                        </button>
-                        <div class="folder-stats" id="folderStats" style="display: none;">
-                            <span class="stat-label">Folders:</span>
-                            <span class="stat-value" id="totalFolders">0</span>
-                            <span class="stat-separator">|</span>
-                            <span class="stat-label">Images:</span>
-                            <span class="stat-value" id="totalImages">0</span>
-                        </div>
-                        <div class="selected-folders-list" id="selectedFolders">
-                            <!-- Folder tags will be dynamically added here -->
-                        </div>
+                <!-- Zone 1 — identity + primary action -->
+                <div class="header-zone header-left">
+                    <div class="header-branding">
+                        <img src="assets/logo.jpeg" alt="QuickTag Logo" class="app-logo">
                     </div>
-                </div>
-                
-                <!-- LLM Status Indicator -->
-                <div class="llm-status" id="llmStatus">
-                    <div class="status-indicator" id="statusIndicator"></div>
-                    <span class="status-label" id="statusLabel">LLM Connected</span>
+                    <button class="btn-add-folder" id="addFolderBtn">
+                        <span class="btn-icon">+</span>
+                        Add Folder
+                    </button>
                 </div>
 
-                <!-- Theme Toggle -->
-                <button class="icon-btn" id="themeToggle" aria-label="Toggle light and dark theme" title="Toggle theme">
-                    <svg class="theme-icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.1"/><path d="M12 2.4v2.6M12 19v2.6M21.6 12H19M5 12H2.4M18.8 5.2l-1.8 1.8M7 17l-1.8 1.8M18.8 18.8L17 17M7 7 5.2 5.2"/></svg>
-                    <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.2 8.2 0 0 1 9.8 3.5a8.2 8.2 0 1 0 10.7 10.7Z"/></svg>
-                </button>
+                <!-- Zone 2 — system cluster (install button injected before .llm-status) -->
+                <div class="header-zone header-system" role="group" aria-label="System controls">
+                    <!-- LLM Status Indicator -->
+                    <div class="llm-status" id="llmStatus" role="button" tabindex="0" aria-label="Open LLM settings">
+                        <div class="status-indicator" id="statusIndicator"></div>
+                        <span class="status-label" id="statusLabel">LLM Connected</span>
+                    </div>
+
+                    <!-- Settings -->
+                    <button class="icon-btn sq" id="settingsBtn" aria-label="Open settings" title="Settings">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+                    </button>
+
+                    <!-- Theme Toggle -->
+                    <button class="icon-btn" id="themeToggle" aria-label="Toggle light and dark theme" title="Toggle theme">
+                        <svg class="theme-icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.1"/><path d="M12 2.4v2.6M12 19v2.6M21.6 12H19M5 12H2.4M18.8 5.2l-1.8 1.8M7 17l-1.8 1.8M18.8 18.8L17 17M7 7 5.2 5.2"/></svg>
+                        <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.2 8.2 0 0 1 9.8 3.5a8.2 8.2 0 1 0 10.7 10.7Z"/></svg>
+                    </button>
+                </div>
             </div>
         </header>
 
+        <!-- Folder context bar — full-width strip, shown only when folders are loaded -->
+        <div class="folder-context-bar" id="folderContextBar" role="region" aria-label="Selected folders" style="display: none;">
+            <div class="folder-stats" id="folderStats">
+                <span class="stat-value" id="totalFolders">0</span>
+                <span class="stat-label">Folders</span>
+                <span class="stat-separator">·</span>
+                <span class="stat-value" id="totalImages">0</span>
+                <span class="stat-label">Images</span>
+            </div>
+            <div class="selected-folders-list" id="selectedFolders">
+                <!-- Folder tags will be dynamically added here -->
+            </div>
+            <button class="btn-context-clear" id="clearAllFoldersBtn">Clear all</button>
+        </div>
+
         <!-- Main Content with side-by-side layout -->
         <main class="main-content">
-            <div class="content-columns">
+            <div class="content-columns stage-empty">
+                <!-- Empty state / drop zone — shown when no folders are loaded -->
+                <div class="empty-state-card" id="emptyState">
+                    <div class="empty-state-icon" aria-hidden="true">
+                        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4l2 2.5h7A1.5 1.5 0 0 1 19 10v7.5A1.5 1.5 0 0 1 17.5 19h-13A1.5 1.5 0 0 1 3 17.5Z"/><path d="M12 16.5V11M9.5 13.5 12 11l2.5 2.5"/></svg>
+                    </div>
+                    <h2 class="empty-state-title">Drop image folders here</h2>
+                    <p class="empty-state-text">Drag a folder of images onto this area, or browse to get started. Everything runs locally in your browser.</p>
+                    <button class="btn-add-folder" id="emptyAddFolderBtn">
+                        <span class="btn-icon">+</span>
+                        Add Folder
+                    </button>
+                </div>
+
                 <!-- Image Preview Grid -->
                 <section class="image-preview" id="imagePreview" style="display: none;">
                     <div class="preview-header">
@@ -143,9 +165,7 @@
                     </div>
                     <div class="timeline-container">
                         <div class="timeline-line"></div>
-                        <div class="timeline-items" id="timelineItems">
-                            <!-- Timeline items will be dynamically added here -->
-                        </div>
+                        <div class="timeline-items" id="timelineItems"></div>
                     </div>
                 </section>
             </div>

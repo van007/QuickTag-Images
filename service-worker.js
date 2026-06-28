@@ -1,7 +1,7 @@
 // Service Worker for QuickTag Images PWA
 // Version 0.1.0
 
-const CACHE_NAME = 'quicktag-v5';
+const CACHE_NAME = 'quicktag-v6';
 const urlsToCache = [
   '/',
   '/index.html',

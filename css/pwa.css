@@ -1,24 +1,26 @@
 /* PWA-specific styles for QuickTag Images */
 
 /* Install Button in Header */
+/* Demoted to a ghost — the accent now belongs to Add Folder (the #1 task) */
 .pwa-install-button {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: var(--accent);
-    color: var(--canvas);
-    border: 1px solid transparent;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
     border-radius: var(--r-pill);
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color var(--dur-fast);
+    transition: border-color var(--dur-fast), color var(--dur-fast);
 }
 
 .pwa-install-button:hover {
-    background: var(--accent-soft);
+    background: transparent;
+    border-color: var(--ink);
 }
 
 .pwa-install-button .install-icon {
