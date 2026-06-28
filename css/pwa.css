@@ -1,27 +1,26 @@
 /* PWA-specific styles for QuickTag Images */
 
 /* Install Button in Header */
+/* Demoted to a ghost — the accent now belongs to Add Folder (the #1 task) */
 .pwa-install-button {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-family: 'JetBrains Mono', monospace;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-pill);
+    font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(94, 114, 228, 0.2);
+    transition: border-color var(--dur-fast), color var(--dur-fast);
 }
 
 .pwa-install-button:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(94, 114, 228, 0.3);
+    background: transparent;
+    border-color: var(--ink);
 }
 
 .pwa-install-button .install-icon {
@@ -39,12 +38,12 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(8, 9, 11, 0.62);
     z-index: 10000;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(3px);
 }
 
 .pwa-install-popup.popup-show {
@@ -57,11 +56,12 @@
 
 .install-popup-content {
     background: var(--surface);
-    border-radius: 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-xl);
     padding: 32px;
     max-width: 420px;
     width: 100%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     position: relative;
     animation: slideUp 0.3s ease;
 }
@@ -71,32 +71,32 @@
     top: 16px;
     right: 16px;
     background: none;
-    border: none;
-    font-size: 24px;
-    color: var(--text-muted);
+    border: 1px solid var(--line);
+    font-size: 20px;
+    color: var(--ink-muted);
     cursor: pointer;
     width: 32px;
     height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
+    border-radius: var(--r-sm);
+    transition: border-color var(--dur-fast), color var(--dur-fast);
 }
 
 .popup-close:hover {
-    background: var(--surface-hover);
-    color: var(--text-primary);
+    border-color: var(--line-strong);
+    color: var(--ink);
 }
 
 .popup-icon {
     width: 80px;
     height: 80px;
     margin: 0 auto 20px;
-    border-radius: 20px;
+    border-radius: var(--r-lg);
     overflow: hidden;
-    box-shadow: 0 8px 24px rgba(94, 114, 228, 0.2);
-    background: white;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,16 +109,18 @@
 }
 
 .install-popup-content h3 {
+    font-family: var(--font-display);
     font-size: 24px;
     font-weight: 600;
-    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    color: var(--ink);
     margin-bottom: 12px;
     text-align: center;
 }
 
 .install-popup-content > p {
     font-size: 14px;
-    color: var(--text-secondary);
+    color: var(--ink-muted);
     text-align: center;
     margin-bottom: 24px;
     line-height: 1.6;
@@ -130,8 +132,9 @@
     gap: 12px;
     margin-bottom: 28px;
     padding: 20px;
-    background: var(--background);
-    border-radius: 12px;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
 }
 
 .feature-item {
@@ -139,7 +142,7 @@
     align-items: center;
     gap: 12px;
     font-size: 14px;
-    color: var(--text-primary);
+    color: var(--ink);
 }
 
 .feature-item svg {
@@ -164,31 +167,30 @@
 }
 
 .popup-actions .btn-primary {
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
+    background: var(--accent);
+    color: var(--canvas);
+    border: 1px solid transparent;
+    border-radius: var(--r-pill);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color var(--dur-fast);
 }
 
 .popup-actions .btn-primary:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
+    background: var(--accent-soft);
 }
 
 .popup-actions .btn-secondary {
-    background: var(--surface);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-pill);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: border-color var(--dur-fast), color var(--dur-fast);
 }
 
 .popup-actions .btn-secondary:hover {
-    background: var(--surface-hover);
-    color: var(--text-primary);
+    border-color: var(--ink);
+    color: var(--ink);
 }
 
 /* Notifications */
@@ -198,13 +200,13 @@
     left: 50%;
     transform: translateX(-50%) translateY(100px);
     background: var(--surface);
-    color: var(--text-primary);
+    border: 1px solid var(--line);
+    color: var(--ink);
     padding: 16px 24px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-radius: var(--r-md);
     font-size: 14px;
     z-index: 10001;
-    transition: transform 0.3s ease;
+    transition: transform var(--dur-mid) var(--ease-out-expo);
 }
 
 .pwa-notification.show {
@@ -212,18 +214,21 @@
 }
 
 .pwa-notification-success {
-    background: var(--success);
-    color: white;
+    background: color-mix(in srgb, var(--success) 14%, var(--surface));
+    border-color: color-mix(in srgb, var(--success) 40%, var(--line));
+    color: var(--ink);
 }
 
 .pwa-notification-error {
-    background: var(--error);
-    color: white;
+    background: color-mix(in srgb, var(--error) 14%, var(--surface));
+    border-color: color-mix(in srgb, var(--error) 40%, var(--line));
+    color: var(--ink);
 }
 
 .pwa-notification-info {
-    background: var(--info);
-    color: white;
+    background: color-mix(in srgb, var(--info) 14%, var(--surface));
+    border-color: color-mix(in srgb, var(--info) 40%, var(--line));
+    color: var(--ink);
 }
 
 /* Update notification */
@@ -232,16 +237,15 @@
     top: 20px;
     right: 20px;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-lg);
     padding: 16px 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     z-index: 10001;
     display: flex;
     align-items: center;
     gap: 16px;
     transform: translateX(400px);
-    transition: transform 0.3s ease;
+    transition: transform var(--dur-mid) var(--ease-out-expo);
 }
 
 .pwa-update-notification.show {
@@ -251,7 +255,7 @@
 .pwa-update-notification p {
     margin: 0;
     font-size: 14px;
-    color: var(--text-primary);
+    color: var(--ink);
 }
 
 .pwa-update-notification .btn-small {
@@ -266,9 +270,10 @@
     left: 50%;
     transform: translateX(-50%);
     background: var(--surface);
-    border-radius: 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-xl);
     padding: 24px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     max-width: 360px;
     width: calc(100% - 40px);
     z-index: 10001;
@@ -276,15 +281,17 @@
 }
 
 .ios-instructions-content h3 {
+    font-family: var(--font-display);
     font-size: 18px;
-    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    color: var(--ink);
     margin-bottom: 16px;
 }
 
 .ios-instructions-content ol {
     margin: 0 0 20px 0;
     padding-left: 24px;
-    color: var(--text-secondary);
+    color: var(--ink-muted);
     font-size: 14px;
     line-height: 1.8;
 }
@@ -295,27 +302,29 @@
 
 .ios-share-icon {
     display: inline-block;
-    background: var(--background);
+    background: var(--canvas);
+    border: 1px solid var(--line);
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: var(--r-sm);
     font-size: 16px;
 }
 
 .ios-instructions-content button {
     width: 100%;
     padding: 12px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
+    background: var(--accent);
+    color: var(--canvas);
+    border: 1px solid transparent;
+    border-radius: var(--r-pill);
+    font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background-color var(--dur-fast);
 }
 
 .ios-instructions-content button:hover {
-    background: var(--primary-hover);
+    background: var(--accent-soft);
 }
 
 /* Animations */
@@ -400,23 +409,6 @@
     }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #1a1a2e;
-        --surface: #16213e;
-        --surface-hover: #0f3460;
-        --border: #2a3f5f;
-        --text-primary: #e8e8e8;
-        --text-secondary: #b8b8b8;
-        --text-muted: #888888;
-    }
-
-    .popup-icon {
-        background: var(--surface);
-    }
-
-    .popup-close:hover {
-        background: var(--surface-hover);
-    }
-}
+/* Theming is driven solely by [data-theme]; the old prefers-color-scheme
+   override (navy palette) was removed in Phase 0 — it conflicted with the
+   design-language token system. */

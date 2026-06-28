@@ -4,8 +4,8 @@
   "description": "AI-Powered Image Labeling & Organization Tool",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F7F8FC",
-  "theme_color": "#5E72E4",
+  "background_color": "#0a0b0d",
+  "theme_color": "#0a0b0d",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
