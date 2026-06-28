@@ -1,7 +1,7 @@
 // Service Worker for QuickTag Images PWA
 // Version 0.1.0
 
-const CACHE_NAME = 'quicktag-v4';
+const CACHE_NAME = 'quicktag-v5';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -113,21 +113,26 @@ self.addEventListener('fetch', event => {
               <title>QuickTag Images - Offline</title>
               <style>
                 body {
-                  font-family: 'JetBrains Mono', monospace;
+                  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
                   display: flex;
                   align-items: center;
                   justify-content: center;
                   height: 100vh;
                   margin: 0;
-                  background: #F7F8FC;
-                  color: #32325D;
+                  background: #0a0b0d;
+                  color: #f4f4f5;
                 }
                 .offline-message {
                   text-align: center;
                   padding: 2rem;
                 }
-                h1 { color: #5E72E4; }
-                p { color: #8898AA; margin-top: 1rem; }
+                h1 {
+                  font-family: "Bricolage Grotesque", "Geist", ui-sans-serif, sans-serif;
+                  font-weight: 600;
+                  letter-spacing: -0.02em;
+                  color: #ff5d2e;
+                }
+                p { color: #9b9da6; margin-top: 1rem; }
               </style>
             </head>
             <body>
