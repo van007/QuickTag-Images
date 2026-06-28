@@ -400,23 +400,6 @@
     }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #1a1a2e;
-        --surface: #16213e;
-        --surface-hover: #0f3460;
-        --border: #2a3f5f;
-        --text-primary: #e8e8e8;
-        --text-secondary: #b8b8b8;
-        --text-muted: #888888;
-    }
-
-    .popup-icon {
-        background: var(--surface);
-    }
-
-    .popup-close:hover {
-        background: var(--surface-hover);
-    }
-}
+/* Theming is driven solely by [data-theme]; the old prefers-color-scheme
+   override (navy palette) was removed in Phase 0 — it conflicted with the
+   design-language token system. */

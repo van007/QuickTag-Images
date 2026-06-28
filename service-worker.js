@@ -1,19 +1,20 @@
 // Service Worker for QuickTag Images PWA
 // Version 0.1.0
 
-const CACHE_NAME = 'quicktag-v1';
+const CACHE_NAME = 'quicktag-v4';
 const urlsToCache = [
   '/',
   '/index.html',
   '/styles.css',
   '/app.js',
   '/image-optimizer.js',
+  '/js/theme.js',
   '/manifest.json',
   '/assets/logo.jpeg',
   // External dependencies
   'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
   'https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js',
-  'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap'
+  'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap'
 ];
 
 // Install event - cache resources
